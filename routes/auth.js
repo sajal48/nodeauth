@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('../model/User');
 const {LoginValidation,RegisterValidation} = require('../validation');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 
@@ -82,9 +83,9 @@ router.post('/login',async (req,res)=>{
         return true;
     }
 
-    res.send({
-        "user": user._id
-    });
+    const token = jwt.sign({_id : user._id},process.env.TOKEN_SECRET);
+    res.header('auth-token',token).send(token);
+    
 });
 
 module.exports = router;
